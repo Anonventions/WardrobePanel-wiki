@@ -23,14 +23,15 @@ A powerful Minecraft plugin that provides a web-based character creator, allowin
 8. [Permission-Based Item Filtering](#-permission-based-item-filtering)
 9. [Owned Items System](#-owned-items-system)
 10. [Character Profiles](#-character-profiles)
-11. [MineSkin API Integration](#-mineskin-api-integration)
-12. [Web Server Setup](#-web-server-setup)
-13. [Adding Custom Overlays](#-adding-custom-overlays)
-14. [Panorama Background](#-panorama-background)
-15. [File Structure](#-file-structure)
-16. [Troubleshooting](#-troubleshooting)
-17. [API Reference](#-api-reference)
-18. [Credits](#-credits)
+11. [PlaceholderAPI Support](#-placeholderapi-support)
+12. [MineSkin API Integration](#-mineskin-api-integration)
+13. [Web Server Setup](#-web-server-setup)
+14. [Adding Custom Overlays](#-adding-custom-overlays)
+15. [Panorama Background](#-panorama-background)
+16. [File Structure](#-file-structure)
+17. [Troubleshooting](#-troubleshooting)
+18. [API Reference](#-api-reference)
+19. [Credits](#-credits)
 
 ---
 
@@ -57,10 +58,12 @@ WardrobePanel is a comprehensive character customization system for Minecraft se
 - **Color Customization**: Adjust colors for hair, eyes, skin tones, and clothing
 - **3D Skin Preview**: Powered by skinview3d for realistic rendering
 - **Built-in Web Server**: No external hosting required
+- **PlaceholderAPI Support**: Full integration for scoreboards, tab lists, and more
 
 ### Player Features
 - **Save & Load Outfits**: Persistent outfit storage per player
 - **Multiple Character Profiles**: Create and manage multiple character looks
+- **Load Profiles In-Game**: Switch between profiles with a simple command
 - **Secure Sessions**: Time-limited, token-based authentication
 
 ### Admin Features
@@ -89,6 +92,7 @@ WardrobePanel is a comprehensive character customization system for Minecraft se
 - **Java**: 21 or higher
 - **Server**: Paper 1.21.4+ (recommended) or Spigot compatible
 - **MineSkin API Key**: Required for skin application (free at [mineskin.org](https://mineskin.org/apikey))
+- **PlaceholderAPI** (Optional): For placeholder support in other plugins
 
 ---
 
@@ -231,6 +235,8 @@ messages:
 | `/webchar delete <name>` | Delete a character profile |
 | `/webchar list` | List your character profiles |
 | `/webchar profiles` | Alias for list |
+| `/webchar load <profile>` | Load and apply a profile's skin in-game |
+| `/webchar apply <profile>` | Alias for load |
 | `/webchar help` | Show command help |
 
 **Aliases**: `/wc`, `/character`
@@ -243,6 +249,7 @@ messages:
 | `/webchar status` | Show plugin status (web server, sessions, etc.) |
 | `/webchar link <player>` | Generate a wardrobe link for another player |
 | `/webchar sessions` | List all active sessions |
+| `/webchar loadfor <player> <profile>` | Load a profile's skin for another player |
 
 ### Ownership Commands (Admin)
 
@@ -426,11 +433,155 @@ profiles:
 
 # Delete a profile
 /webchar delete MyKnight
+
+# Load/apply a profile's skin in-game
+/webchar load MyKnight
+
+# Admins can load profiles for other players
+/webchar loadfor PlayerName MyKnight
 ```
 
 ### Storage
 
 Profiles are stored in `plugins/WardrobePanel/profiles/<uuid>.json`.
+
+---
+
+## 🏷️ PlaceholderAPI Support
+
+WardrobePanel provides full PlaceholderAPI integration, allowing you to display player wardrobe information in scoreboards, tab lists, chat formats, and more.
+
+### Requirements
+
+- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) must be installed
+- The expansion registers automatically when PlaceholderAPI is detected
+
+### Available Placeholders
+
+#### Profile Placeholders
+
+| Placeholder | Description | Example Output |
+|-------------|-------------|----------------|
+| `%wardrobepanel_profile_count%` | Number of profiles the player has | `3` |
+| `%wardrobepanel_profile_current%` | Name of the currently active profile | `MyKnight` |
+| `%wardrobepanel_profile_list%` | Comma-separated list of all profile names | `MyKnight, Mage, Default` |
+| `%wardrobepanel_profile_max%` | Maximum profiles allowed for the player | `5` |
+
+#### Outfit Placeholders
+
+| Placeholder | Description | Example Output |
+|-------------|-------------|----------------|
+| `%wardrobepanel_outfit_hair%` | Current hair style ID | `male-90s_Side_Part` |
+| `%wardrobepanel_outfit_hair_color%` | Current hair color (hex) | `#8B4513` |
+| `%wardrobepanel_outfit_eye%` | Current eye style ID | `blue_eyes` |
+| `%wardrobepanel_outfit_eye_color%` | Current eye color (hex) | `#1E90FF` |
+| `%wardrobepanel_outfit_skin%` | Current base skin ID | `base-steve-male` |
+| `%wardrobepanel_outfit_skin_color%` | Current skin tone (hex) | `#DEB887` |
+| `%wardrobepanel_outfit_shirt%` | Current shirt overlay ID | `casual_tee` |
+| `%wardrobepanel_outfit_pants%` | Current pants overlay ID | `jeans` |
+| `%wardrobepanel_outfit_shoes%` | Current shoes overlay ID | `sneakers` |
+| `%wardrobepanel_outfit_jacket%` | Current jacket overlay ID | `leather_jacket` |
+| `%wardrobepanel_outfit_accessory%` | Current accessory overlay ID | `glasses` |
+| `%wardrobepanel_outfit_beard%` | Current beard overlay ID | `stubble` |
+| `%wardrobepanel_outfit_marking%` | Current marking overlay ID | `scar_eye` |
+
+#### Ownership Placeholders
+
+| Placeholder | Description | Example Output |
+|-------------|-------------|----------------|
+| `%wardrobepanel_owned_count%` | Total number of owned overlays | `42` |
+| `%wardrobepanel_owned_hairs%` | Number of owned hair styles | `12` |
+| `%wardrobepanel_owned_shirts%` | Number of owned shirts | `8` |
+| `%wardrobepanel_owned_pants%` | Number of owned pants | `6` |
+| `%wardrobepanel_owned_<category>%` | Number of owned items in any category | `5` |
+| `%wardrobepanel_owns_all%` | Whether player owns all items | `true` or `false` |
+
+#### Session Placeholders
+
+| Placeholder | Description | Example Output |
+|-------------|-------------|----------------|
+| `%wardrobepanel_session_active%` | Whether player has an active session | `true` or `false` |
+| `%wardrobepanel_session_expires%` | Minutes until session expires | `45` |
+| `%wardrobepanel_cooldown_remaining%` | Seconds until cooldown ends | `15` |
+
+#### Statistics Placeholders
+
+| Placeholder | Description | Example Output |
+|-------------|-------------|----------------|
+| `%wardrobepanel_total_skins_applied%` | Total skins the player has applied | `27` |
+| `%wardrobepanel_last_skin_change%` | Time since last skin change | `2h ago` |
+| `%wardrobepanel_has_custom_skin%` | Whether player has a custom skin applied | `true` or `false` |
+
+### Usage Examples
+
+#### Scoreboard (using Featherboard, AnimatedScoreboard, etc.)
+
+```yaml
+lines:
+  - "&6Profile: &f%wardrobepanel_profile_current%"
+  - "&6Outfits: &f%wardrobepanel_profile_count%/%wardrobepanel_profile_max%"
+  - "&6Owned Items: &f%wardrobepanel_owned_count%"
+```
+
+#### Tab List (using TAB plugin)
+
+```yaml
+playerlist:
+  header:
+    - "&6=== Wardrobe Stats ==="
+  footer:
+    - "&7Current Look: &f%wardrobepanel_profile_current%"
+```
+
+#### Chat Format (using EssentialsX, LuckPerms, etc.)
+
+```
+[%wardrobepanel_profile_current%] %player_name%: %message%
+```
+
+#### DeluxeMenus GUI
+
+```yaml
+items:
+  profile-info:
+    material: PLAYER_HEAD
+    slot: 13
+    display_name: "&6Your Wardrobe"
+    lore:
+      - "&7Active Profile: &f%wardrobepanel_profile_current%"
+      - "&7Total Profiles: &f%wardrobepanel_profile_count%"
+      - "&7Owned Items: &f%wardrobepanel_owned_count%"
+      - ""
+      - "&eClick to open wardrobe!"
+```
+
+### Relational Placeholders
+
+For comparing players (useful in PvP or social plugins):
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%rel_wardrobepanel_same_outfit%` | Whether two players have the same outfit |
+| `%rel_wardrobepanel_same_profile%` | Whether two players have the same profile name |
+
+### Configuration
+
+PlaceholderAPI support can be configured in `config.yml`:
+
+```yaml
+placeholderapi:
+  # Enable PlaceholderAPI integration
+  enabled: true
+  
+  # Cache duration for placeholder values (seconds)
+  cache-duration: 5
+  
+  # Format for empty/none values
+  empty-format: "None"
+  
+  # Format for time displays
+  time-format: "%dm %ss"
+```
 
 ---
 
