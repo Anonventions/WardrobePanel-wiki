@@ -88,35 +88,22 @@ WardrobePanel is a comprehensive character customization system for Minecraft se
 
 - **Java**: 21 or higher
 - **Server**: Paper 1.21.4+ (recommended) or Spigot compatible
-- **Maven**: For building from source
 - **MineSkin API Key**: Required for skin application (free at [mineskin.org](https://mineskin.org/apikey))
 
 ---
 
 ## 🔧 Installation
 
-### From Release
+### Step-by-Step Installation
 
-1. Download the latest `wardrobepanel-x.x.x.jar` from releases
+1. Download the latest `wardrobepanel-x.x.x.jar`
 2. Place the JAR in your server's `plugins/` folder
 3. Start/restart your server
 4. The plugin will generate default configuration and asset files
-5. Configure `plugins/WardrobePanel/config.yml`
-6. Get a MineSkin API key and add it to the config
+5. Configure `plugins/WardrobePanel/config.yml` (see [Configuration](#-configuration))
+6. Get a MineSkin API key from [mineskin.org/apikey](https://mineskin.org/apikey) and add it to the config
 7. Restart the server or run `/webchar reload`
 
-### Building from Source
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd WardrobePanel
-
-# Build with Maven
-mvn clean package
-
-# JAR will be in target/wardrobepanel-1.3.1.jar
-```
 
 ### Network/Port Configuration
 
@@ -787,5 +774,5 @@ Response: PNG image
 
 ---
 
-*Last updated: January 2026 | Version 1.3.1*
+*Last updated: January 14, 2026 | Version 1.3.1*
 
